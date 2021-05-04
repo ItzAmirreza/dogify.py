@@ -7,9 +7,11 @@ from .core.Room import Room
 from .core.constants import constants
 import json
 import uuid
+import datetime
 
 heartBeatInterval = constants['heartBeatInterval']
 connectionTimeOut = constants['connectionTimeout']
+
 
 __all__ = ("Client")
 
@@ -69,15 +71,15 @@ class Client():
             await asyncio.sleep(heartBeatInterval/1000)
             await self.ws.ping()
 
-    async def EventListeners(self):
-        print(self.events)
-        async for msg in self.ws:
-            if not msg == 'pong':
-                loadedJson = json.loads(msg)
-                if loadedJson['op'] == "new_user_join_room" and "on_user_join" in self.events:
-                    await self.events["on_user_join"](User(loadedJson["d"]["user"]))
-                if loadedJson['op'] == "user_left_room" and "on_user_leave" in self.events:
-                    await self.events["on_user_leave"](User(loadedJson["d"]["userId"]))
+    # async def EventListeners(self):
+    #     # print(self.events)
+    #     async for msg in self.ws:
+    #         if not msg == 'pong':
+    #             loadedJson = json.loads(msg)
+    #             if loadedJson['op'] == "new_user_join_room" and "on_user_join" in self.events:
+    #                 await self.events["on_user_join"](User(loadedJson["d"]["user"]))
+    #             if loadedJson['op'] == "user_left_room" and "on_user_leave" in self.events:
+    #                 await self.events["on_user_leave"](User(loadedJson["d"]["userId"]))
                 
 
     async def getTopPublicRooms(self):
@@ -103,6 +105,7 @@ class Client():
         if not self.currentRoom is None:
             if forceLeave:
                 await self.leaveRoom()
+                self.currentRoom = None
             else:
                 return False
 
@@ -119,8 +122,10 @@ class Client():
                     break
             except:
                 pass
+        roomobj = Room(answer["d"]["room"])
+        self.currentRoom = roomobj
         
-        return Room(answer["d"]["room"])
+        return roomobj
     
 
     async def leaveRoom(self):
@@ -128,9 +133,64 @@ class Client():
             return True
         data ={"op":"leave_room","d":{}}
         await self.ws.send(json.dumps(data))
+        print('even sent the socket!')
         return True
-                
     
+    
+
+
+    async def sendMessage(self, message):
+        if self.currentRoom:
+            tokens = []
+            wholemsg = message.split(" ")
+            for each in wholemsg:
+                type, each = await self.typeDetector(each)
+                goingdata = {"t": type,"v": each}
+                tokens.append(goingdata)
+
+            data = {"op":"send_room_chat_msg","d":{"tokens":tokens,"whisperedTo":[]}}
+            await self.ws.send(json.dumps(data))
+        else:
+            raise Exception("You are not in a room.")
+
+    
+    async def typeDetector(self, text):
+        roomusernames = []
+        if text.startswith(":") and text.endswith(":"):
+            return "emote", text.replace(":", "")
+        elif text.startswith('@') and text in roomusernames:
+            return "mention", text.replace("@", "")
+        else:
+            return "text", text
+    
+
+    async def defean(self):
+        fetchId = str(uuid.uuid4())
+        data = {"v":"0.2.0", "op":"room:deafen","p":{"deafened":True},"ref":fetchId}
+        await self.ws.send(json.dumps(data))
+    
+    async def undefean(self):
+        fetchId = str(uuid.uuid4())
+        data = {"v":"0.2.0", "op":"room:deafen","p":{"deafened":False},"ref":fetchId}
+        await self.ws.send(json.dumps(data))
+
+
+    async def schedule_room(self, name="not defined", description="not defined", time=datetime.datetime.now()):
+        if not isinstance(time, datetime.datetime):
+            raise Exception("Please put a valid datetime object")
+        fetchId = str(uuid.uuid4())
+        time = str(time).replace(" ", "T") + "Z"
+
+        data = {"op":"schedule_room","d":{"name":name,"scheduledFor":time,"description":description,"cohosts":[]},"fetchId":fetchId}
+        await self.ws.send(json.dumps(data))
+        answer = ""
+        async for msg in self.ws:
+            try:
+                msg = json.loads(msg)
+                if msg["fetchId"] == fetchId:
+                    return msg["d"]["scheduledRoom"]["id"]
+            except:
+                pass 
 
         
     async def authenticate(self, token, rtoken):
@@ -152,12 +212,12 @@ class Client():
             if answer["op"] == "auth-good":
                 self.client = User(answer["d"]["user"])
                 #print(await self.getTopPublicRooms())
-                eventListeners = self.loop.create_task(self.EventListeners())
+                
+                # eventListeners = self.loop.create_task(self.EventListeners())
                 heartBeat =  self.loop.create_task(self.HeartBeat())
-                ready = self.loop.create_task(self.events["on_ready"](self.client))
-                if 'on_ready' in self.events:
-                    await ready
-                await asyncio.wait([heartBeat,eventListeners])
+                await self.events["on_ready"](self.client)
+                await heartBeat
+                # await eventListeners
                 
                     
                 

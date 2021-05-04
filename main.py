@@ -1,3 +1,4 @@
+import datetime
 import dogehouse
 import asyncio
 
@@ -12,9 +13,15 @@ async def on_ready(ctx):
     result =  await client.joinRoom('9faf5e37-feeb-4415-8eb5-405edae483ac', forceLeave=True)
     if result:
         print(f"joined {result.name}")
-        await asyncio.sleep(20)
-        await client.leaveRoom()
-        print("left the room.")
+        await asyncio.sleep(5)
+        await client.sendMessage("Hello there!, this is testing for chat. I'm being developed by @Amirreza.  :catDance:  :catDance:  :catDance:  :catDance:  :catDance:  :catDance:  :catDance: ")
+        await client.sendMessage(" :pepeMeltdown:   :pepeMeltdown:  :pepeMeltdown:  :pepeMeltdown: ")
+        await asyncio.sleep(3)
+        await client.sendMessage("Now i'm going to defean myself...  :BOGGED: ")
+        await client.defean()
+        await asyncio.sleep(3)
+        await client.sendMessage("Now undefeaning oooo  :BBoomer: ")
+        await client.undefean()
     else:
         print("Failed to join the room")
     # await client.close()
