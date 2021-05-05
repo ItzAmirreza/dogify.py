@@ -2,38 +2,24 @@ import datetime
 import dogehouse
 import asyncio
 
-token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJKb2tlbiIsImV4cCI6MTYyMDE1NDI3MCwiaWF0IjoxNjIwMTUwNjcwLCJpc3MiOiJKb2tlbiIsImp0aSI6IjJwdHVzc3FxZDUxZWp1Z2IzbzAwcDJ0MSIsIm5iZiI6MTYyMDE1MDY3MCwidXNlcklkIjoiYjYyZTU4M2ItMTVjNy00Nzk1LWFlMWMtNmQ1NzEzMGNiZjFiIn0.6brcY0XsZzItkPyX8jmGzMEEXYJR-ULazJ8N0Ofb83w"
-rtoken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJKb2tlbiIsImV4cCI6MTYyMjc0MjY3MCwiaWF0IjoxNjIwMTUwNjcwLCJpc3MiOiJKb2tlbiIsImp0aSI6IjJwdHVzc3FxZGZnNGR1Z2IzbzAwcDJ1MSIsIm5iZiI6MTYyMDE1MDY3MCwidG9rZW5WZXJzaW9uIjoyLCJ1c2VySWQiOiJiNjJlNTgzYi0xNWM3LTQ3OTUtYWUxYy02ZDU3MTMwY2JmMWIifQ.1XOnp6yC-UkQYw-sLlONyg03l4EbdwLzedgTKVIc3NM"
+token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJKb2tlbiIsImV4cCI6MTYyMDIyMjE2MywiaWF0IjoxNjIwMjE4NTYzLCJpc3MiOiJKb2tlbiIsImp0aSI6IjJwdTJvY285c2xrMTc3YWhwODAwZGhpMSIsIm5iZiI6MTYyMDIxODU2MywidXNlcklkIjoiYjYyZTU4M2ItMTVjNy00Nzk1LWFlMWMtNmQ1NzEzMGNiZjFiIn0.4SBOUpAgIukrgmxWE5ZD2fIEgbP7BNX9DBFy56GAsvU"
+rtoken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJKb2tlbiIsImV4cCI6MTYyMjgxMDU2MywiaWF0IjoxNjIwMjE4NTYzLCJpc3MiOiJKb2tlbiIsImp0aSI6IjJwdTJvY285dDE1NGo3YWhwODAwZGhqMSIsIm5iZiI6MTYyMDIxODU2MywidG9rZW5WZXJzaW9uIjoyLCJ1c2VySWQiOiJiNjJlNTgzYi0xNWM3LTQ3OTUtYWUxYy02ZDU3MTMwY2JmMWIifQ.9-xDmMHGRz0raxr86KFxweQ1vpFN27JX3Er0BFVDdB0"
 
-client = dogehouse.Client()
+client = dogehouse.Client(prefix='!')
 
 @client.event
 async def on_ready(ctx):
     print(f'started bot {ctx.displayName} with id {ctx.id}')
-    result =  await client.joinRoom('9faf5e37-feeb-4415-8eb5-405edae483ac', forceLeave=True)
-    if result:
-        print(f"joined {result.name}")
-        await asyncio.sleep(5)
-        await client.sendMessage("Hello there!, this is testing for chat. I'm being developed by @Amirreza.  :catDance:  :catDance:  :catDance:  :catDance:  :catDance:  :catDance:  :catDance: ")
-        await client.sendMessage(" :pepeMeltdown:   :pepeMeltdown:  :pepeMeltdown:  :pepeMeltdown: ")
-        await asyncio.sleep(3)
-        await client.sendMessage("Now i'm going to defean myself...  :BOGGED: ")
-        await client.defean()
-        await asyncio.sleep(3)
-        await client.sendMessage("Now undefeaning oooo  :BBoomer: ")
-        await client.undefean()
-    else:
-        print("Failed to join the room")
-    # await client.close()
+    # await client.joinRoom("b1aaf141-4aad-446c-9374-50356a9bba4a")
+    await client.create_room('test','tst',isPrivate=True)
     
 
 @client.event
-async def on_user_join(user):
-    print( user.username,"just joined!")
+async def on_message(msg):
+    # print(msg.content)
+    pass
 
-@client.event
-async def on_user_leave(user):
-    print("user with Id ", user.username," just left!")
+
 
 @client.command
 async def unmute(ctx):
@@ -53,4 +39,4 @@ async def play(ctx):
 
 
 
-client.run(token, rtoken)
+client.run("77a42e92-7a48-43ae-9554-25bbaea3fda6")

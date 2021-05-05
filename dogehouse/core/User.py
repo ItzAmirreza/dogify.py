@@ -37,8 +37,11 @@ class User:
         self.followers = data["followsYou"]
         self.following = data["youAreFollowing"]
         self.blockedUsers = data["iBlockedThem"]
-        self.lastonlinedatetime = datetime.datetime.strptime(
-            f"{data['lastOnline'].split('T')[0]} {data['lastOnline'].split('T')[1].replace('Z', '')}", '%Y-%m-%d %H:%M:%S.%f')
+        try:
+            self.lastonlinedatetime = datetime.datetime.strptime(
+                f"{data['lastOnline'].split('T')[0]} {data['lastOnline'].split('T')[1].replace('Z', '')}", '%Y-%m-%d %H:%M:%S.%f')
+        except:
+            self.lastonlinedatetime = None
         self.followersCount = data["numFollowers"]
         self.followingCount = data["numFollowing"]
         self.roomPermissions = data["roomPermissions"]

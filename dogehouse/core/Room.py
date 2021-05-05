@@ -10,11 +10,21 @@ class Room:
         self.name = data["name"]
         self.ownerId = data["creatorId"]
         self.description = data["description"]
-        self.inserted_at = datetime.datetime.strptime(
-            f"{data['inserted_at'].split('T')[0]} {data['inserted_at'].split('T')[1].replace('Z', '')}", '%Y-%m-%d %H:%M:%S.%f')
+        try:
+            self.inserted_at = datetime.datetime.strptime(
+                f"{data['inserted_at'].split('T')[0]} {data['inserted_at'].split('T')[1].replace('Z', '')}", '%Y-%m-%d %H:%M:%S.%f')
+        except:
+            self.inserted_at = None
         self.isPrivate = data["isPrivate"]
         self.usersCount = data["numPeopleInside"]
-        self.users = self.usersList(data["peoplePreviewList"])
+        try:
+            self.users = self.usersList(data["peoplePreviewList"])
+        except:
+            try:
+                self.users = data["peoplePreviewList"]
+            except Exception as e:
+                print(e)
+
         self.voiceServerId = data["voiceServerId"]
 
     def usersList(self, data):
