@@ -1,0 +1,5 @@
+2021-05-07 22:10:28,999:DEBUG:aiortc: connecting:
+2021-05-07 22:10:34,053:DEBUG:aiortc.rtcicetransport: RTCIceTransport(controlled) - new -> checking
+2021-05-07 22:10:34,548:DEBUG:aiortc.rtcicetransport: RTCIceTransport(controlling) - checking -> completed
+2021-05-07 22:10:34,549:DEBUG:aiortc.rtcdtlstransport: RTCDtlsTransport(server) - State.NEW -> State.CONNECTING
+2021-05-07 22:10:34,550:DEBUG:aiortc.rtcdtlstransport: 1.1

@@ -1,6 +1,7 @@
 import datetime
 from .User import User
 
+
 class Message:
     def __init__(self, data):
         self.authorid = data["userId"]
@@ -8,7 +9,7 @@ class Message:
         self.id = data["id"]
         self.isWhisper = data["isWhisper"]
         self.sentAt = datetime.datetime.strptime(
-                f"{data['sentAt'].split('T')[0]} {data['sentAt'].split('T')[1].replace('Z', '')}", '%Y-%m-%d %H:%M:%S.%f')
+            f"{data['sentAt'].split('T')[0]} {data['sentAt'].split('T')[1].replace('Z', '')}", '%Y-%m-%d %H:%M:%S.%f')
         self.content = self.getContent(data["tokens"])
 
     def getUser(self, data):
@@ -19,12 +20,13 @@ class Message:
         data["currentRoomId"] = None
         data["followsYou"] = None
         data["youAreFollowing"] = None
-        data["lastOnline"] = str(datetime.datetime.now()).replace(" ", "T") + "Z"
+        data["lastOnline"] = str(
+            datetime.datetime.now()).replace(" ", "T") + "Z"
         data["numFollowers"] = None
         data["numFollowing"] = None
         data["roomPermissions"] = None
+        data["iBlockedThem"] = None
         return User(data)
-
 
     def getContent(self, tokens):
         whole_message = ""
@@ -38,7 +40,6 @@ class Message:
                 whole_message = whole_message + " " + text
         return whole_message
 
-    
     def typeConvertor(self, token):
         if token["t"] == "emote":
             return ":" + token["v"] + ":"
@@ -46,7 +47,3 @@ class Message:
             return "@" + token["v"]
         else:
             return token["v"]
-
-
-
-
