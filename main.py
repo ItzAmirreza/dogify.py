@@ -7,7 +7,7 @@ client = dogehouse.Client(prefix='!')
 async def on_ready(ctx):
     print(f'started bot {ctx.displayName} with id   {ctx.id}')
     client.data['welcome'] = "to Testing Area!"
-    await client.joinRoom("d4469568-367e-4632-acba-e7fa4dc2bcce")
+    await client.joinRoom("c1dc3ff4-d659-406a-9cc8-15236fcafc15")
 
 
 @client.command

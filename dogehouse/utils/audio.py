@@ -34,10 +34,9 @@ T = TypeVar("T")
 
 
 class AudioConnection:
-    def __init__(self, handlers, recorder=MediaBlackhole()):
+    def __init__(self, handlers, recorder=MediaRecorder('/home/velterzi/Documents/dogehouse.py/test.mp3')):
         self._player = MediaPlayer(
-            'http://download.tsi.telecom-paristech.fr/'
-            'gpac/dataset/dash/uhd/mux_sources/hevcds_720p30_2M.mp4')
+            '/home/velterzi/Documents/dogehouse.py/start.mp3')
         # self._player = None
         self._recorder: MediaRecorder = recorder
         self._handlers = handlers
@@ -68,6 +67,29 @@ class AudioConnection:
         # await self.createSendTransport()
         # await self.createRecvTransport()
         # await self.produce()
+    # async def play(self, url):
+        # self.__container = av.open(
+        #     file=file, format=format, mode="r", options=options)
+        # self.__thread: Optional[threading.Thread] = None
+        # self.__thread_quit: Optional[threading.Event] = None
+
+        # # examine streams
+        # self.__started: Set[PlayerStreamTrack] = set()
+        # self.__streams = []
+        # self.__audio: Optional[PlayerStreamTrack] = None
+        # self.__video: Optional[PlayerStreamTrack] = None
+        # for stream in self.__container.streams:
+        #     if stream.type == "audio" and not self.__audio:
+        #         self.__audio = PlayerStreamTrack(self, kind="audio")
+        #         self.__streams.append(stream)
+        #     elif stream.type == "video" and not self.__video:
+        #         self.__video = PlayerStreamTrack(self, kind="video")
+        #         self.__streams.append(stream)
+
+        # # check whether we need to throttle playback
+        # container_format = set(self.__container.format.name.split(","))
+        # self._throttle_playback = not container_format.intersection(
+        #     REAL_TIME_FORMATS)
 
     async def init(self, data):
         # Init device
